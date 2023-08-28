@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>      
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+    integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>Dashboard Blogen Theme</title>
+</head>
+
+<body>
+  
+  
+  <!-- HEADERing -->
+  <header id="main-header" class="text-white bg-primary py-2">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h1><i class="fas fa-cog"></i> Dashboard</h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ACTIONS -->
+  <!-- POSTS & INFOS -->
+  <main id="posts">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Registered users</h4>
+            </div>
+            <table class="table table-striped">
+              <thead class="thead-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Subject</th>
+                  <th>Email</th>
+                  <th>message</th>
+                </tr>
+              </thead>
+              <tbody class = "tbody">
+               
+              </tbody>
+            </table>
+          </div>
+        </div>
+       
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="main-footer" class="text-white bg-dark mt-5 py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <p class="lead text-center">
+            Copyright &copy; <span id="year">Ababa tesfaye School</span> 
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODALS -->
+
+  <!-- ADD POST MODAL -->
+  <div id="addPostModal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header text-white bg-primary">
+          <h5 class="modal-title">Adicionar Post</h5>
+          <button class="close" data-dismiss="modal">
+            <span class="text-white">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="title">Título</label>
+              <input type="text" class="form-control" />
+            </div>
+             <div class="form-group">
+              <label for="category">Categoria</label>
+              <select class="form-control">
+                <option value="">Desenvolvimento Web</option>
+                <option value="">Desenvolvimento Mobile</option>
+                <option value="">Desenvolvimento Desktop</option>
+                <option value="">Negócios</option>
+                <option value="">Marketing</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="image">Subir Imagem</label>
+              <div class="custom-file">
+                <input type="file" id="image" class="custom-file-input" placeholder="enviar" />
+                <label for="image" class="custom-file-label">Escolher Arquivo</label>
+              </div>
+              <small class="text-muted">Tamanho máximo de 3mb</small>
+            </div>
+            <div class="form-group">
+              <label for="content">Conteúdo</label>
+              <textarea name="addPostEditor" class="form-control"></textarea>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-primary" data-dismiss="modal">Salvar Publicação</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ADD CATEGORY MODAL -->
+  <div id="addCategoryModal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header text-white bg-success">
+          <h5 class="modal-title">Adicionar Categoria</h5>
+          <button class="close" data-dismiss="modal">
+            <span class="text-white">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="category">Nome da Categoria</label>
+              <input type="text" class="form-control" />
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+  const body = document.querySelector(".tbody");
+    
+    fetch("/api/users")
+    .then(resp => resp.json())
+    .then(data => {
+    const html = data.data.map(({name,email,subject,message},i) => {
+      return `<tr>
+                  <td>${i + 1}</td>
+                  <td>${name}</td>
+                  <td>${email}</td>
+                  <td>${subject}</td>
+                  <td>${message}</td>
+                </tr> `
+      }).join("");
+      
+      body.innerHTML = html;
+    })
+    .catch(err => console.log(err))
+     const token = location.search.slice(location.search.indexOf("=") + 1,location.search.length)
+     
+     
+    fetch("/admin/check?t=" + token,{
+      method:"post",
+      headers:{
+        "Accept":"application/json",
+        "Content-Type":"application/type"
+      },
+      body:JSON.stringify({token})
+    })
+    .then(res =>  {
+      if(res.status !== 200) {
+        location.replace("http://localhost:8000/admin") 
+      }
+    })
+    .catch(err =>   location.replace("http://localhost:8000/admin"))
+    
+    
+  </script>
+</body>
+
+</html>
